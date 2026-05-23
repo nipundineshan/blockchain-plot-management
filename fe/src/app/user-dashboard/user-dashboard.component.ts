@@ -10,16 +10,11 @@ import { Plot } from '../core/models';
 @Component({
   selector: 'app-user-dashboard',
   standalone: true,
-  imports: [
-    CommonModule,
-    RouterLink,
-    NgIconComponent
-  ],
+  imports: [CommonModule, RouterLink, NgIconComponent],
   templateUrl: './user-dashboard.component.html',
-  styleUrls: ['./user-dashboard.component.scss']
+  styleUrls: ['./user-dashboard.component.scss'],
 })
 export class UserDashboardComponent implements OnInit {
-
   readonly Home = 'heroHome';
   readonly Heart = 'heroHeart';
   readonly FileText = 'heroDocumentText';
@@ -47,7 +42,7 @@ export class UserDashboardComponent implements OnInit {
       title: 'Modern Villa',
       location: 'Downtown District',
       price: 450000,
-      status: 'verified'
+      status: 'verified',
     },
     {
       id: 2,
@@ -56,8 +51,8 @@ export class UserDashboardComponent implements OnInit {
       title: 'Contemporary House',
       location: 'Suburban Area',
       price: 380000,
-      status: 'verified'
-    }
+      status: 'verified',
+    },
   ];
 
   ngOnInit() {
@@ -71,7 +66,7 @@ export class UserDashboardComponent implements OnInit {
         this.plots.set(plots);
         this.isLoading = false;
       },
-      error: () => this.isLoading = false
+      error: () => (this.isLoading = false),
     });
   }
 
@@ -80,16 +75,16 @@ export class UserDashboardComponent implements OnInit {
       next: (activities) => {
         this.recentActivity = activities;
       },
-      error: (err) => console.error('Error loading activities', err)
+      error: (err) => console.error('Error loading activities', err),
     });
   }
 
   getMintedCount() {
-    return this.plots().filter(p => p.status === 'MINTED' || p.isMinted).length;
+    return this.plots().filter((p) => p.status === 'MINTED').length;
   }
 
   getPendingCount() {
-    return this.plots().filter(p => p.status === 'PENDING_APPROVAL').length;
+    return this.plots().filter((p) => p.status === 'PENDING_APPROVAL').length;
   }
 
   formatPrice(price: number): string {

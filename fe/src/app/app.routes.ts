@@ -21,6 +21,7 @@ import { AdminVerificationsComponent } from './admin-verifications/admin-verific
 import { AdminDocumentsComponent } from './admin-documents/admin-documents.component';
 import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
 import { AdminAddAdminComponent } from './admin-add-admin/admin-add-admin.component';
+import { AdminNftMintingComponent } from './admin-nft-minting/admin-nft-minting.component';
 
 import { RegisterPlotComponent } from './register-plot/register-plot.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
@@ -70,6 +71,11 @@ export const routes: Routes = [
   {
     path: 'admin/properties',
     component: AdminPropertiesComponent,
+    canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/nft-minting',
+    component: AdminNftMintingComponent,
     canActivate: [authGuard, adminGuard]
   },
   {

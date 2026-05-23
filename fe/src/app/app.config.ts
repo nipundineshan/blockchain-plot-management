@@ -48,7 +48,10 @@ import {
   heroDocumentDuplicate,
   heroPhoto,
   heroXMark,
-  heroUserPlus
+  heroUserPlus,
+  heroCpuChip,
+  heroCube,
+  heroSquare2Stack
 } from '@ng-icons/heroicons/outline';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
@@ -103,7 +106,10 @@ export const appConfig: ApplicationConfig = {
       heroDocumentDuplicate,
       heroPhoto,
       heroXMark,
-      heroUserPlus
+      heroUserPlus,
+      heroCpuChip,
+      heroCube,
+      heroSquare2Stack
     }),
   ],
 };

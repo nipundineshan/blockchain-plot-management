@@ -34,29 +34,69 @@ export type PlotStatus =
   | 'REJECTED'
   | 'MINTED';
 
+// export interface Plot {
+//   id: string;
+//   plotName: string;
+//   description: string;
+//   location: string;
+//   district: string;
+//   latitude: number;
+//   longitude: number;
+//   price: number;
+//   areaSize: number;
+//   imageUrl: string;
+//   documents?: string[];
+//   status: PlotStatus;
+//   rejectionReason?: string;
+//   ipfsHash?: string;
+//   tokenId?: string;
+//   transactionHash?: string;
+//   metadataUri?: string;
+//   ipfsCid?: string;
+//   isMinted: boolean;
+//   ownerId: string;
+//   createdAt: string;
+//   updatedAt: string;
+// }
+
 export interface Plot {
   id: string;
-  title: string;
+
+  // Basic Details
+  plotName: string;
   description: string;
-  location: string;
+  surveyNumber: string;
+  areaSize: string;
+
+  // Location
+  latitude?: number | null;
+  longitude?: number | null;
+  address: string;
   district: string;
-  latitude: number;
-  longitude: number;
-  price: number;
-  areaSize: number;
-  imageUrl: string;
-  documents?: string[];
+  state: string;
+  country: string;
+
+  // Financial
+  marketValue: number;
+
+  // Registration
+  registrationNumber: string;
+
+  // Media & Documents
+  imageUrl: string[];
+
+  // Blockchain / Workflow
   status: PlotStatus;
-  rejectionReason?: string;
-  ipfsHash?: string;
-  tokenId?: string;
-  transactionHash?: string;
-  metadataUri?: string;
-  ipfsCid?: string;
-  isMinted: boolean;
-  ownerId: string;
-  createdAt: string;
-  updatedAt: string;
+  tokenId?: string | null;
+  transactionHash?: string | null;
+  ipfsCid?: string | null;
+
+  // Ownership
+  owner: User;
+
+  // Timestamps
+  createdAt: Date | string;
+  updatedAt: Date | string;
 }
 
 export interface ActivityLog {

@@ -11,10 +11,9 @@ import { UserService } from '../core/services/user.service';
   standalone: true,
   imports: [CommonModule, RouterLink, NgIconComponent],
   templateUrl: './admin-dashboard.component.html',
-  styleUrl: './admin-dashboard.component.scss'
+  styleUrl: './admin-dashboard.component.scss',
 })
 export class AdminDashboardComponent implements OnInit {
-
   readonly Home = 'heroHome';
   readonly Users = 'heroUsers';
   readonly FileText = 'heroDocumentText';
@@ -25,6 +24,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly AlertCircle = 'heroExclamationCircle';
   readonly CheckCircle = 'heroCheckCircle';
   readonly UserPlus = 'heroUserPlus';
+  readonly CpuChip = 'heroCpuChip';
 
   private plotService = inject(PlotService);
   private userService = inject(UserService);
@@ -32,33 +32,33 @@ export class AdminDashboardComponent implements OnInit {
 
   stats = [
     {
-      label: "Total Properties",
-      value: "0",
-      change: "+0%",
+      label: 'Total Properties',
+      value: '0',
+      change: '+0%',
       icon: 'heroHome',
-      color: "blue"
+      color: 'blue',
     },
     {
-      label: "Active Users",
-      value: "0",
-      change: "+0%",
+      label: 'Active Users',
+      value: '0',
+      change: '+0%',
       icon: 'heroUsers',
-      color: "green"
+      color: 'green',
     },
     {
-      label: "Pending Verifications",
-      value: "0",
-      change: "0%",
+      label: 'Pending Verifications',
+      value: '0',
+      change: '0%',
       icon: 'heroExclamationCircle',
-      color: "yellow"
+      color: 'yellow',
     },
     {
-      label: "Completed Transactions",
-      value: "0",
-      change: "+0%",
+      label: 'Completed Transactions',
+      value: '0',
+      change: '+0%',
       icon: 'heroCheckCircle',
-      color: "purple"
-    }
+      color: 'purple',
+    },
   ];
 
   pendingVerifications = signal<any[]>([]);
@@ -73,40 +73,44 @@ export class AdminDashboardComponent implements OnInit {
   loadStats() {
     this.plotService.getStats().subscribe({
       next: (data) => {
-        if (data.overview) {
+        console.log('====================================');
+        console.log(data);
+        console.log(data.stats.totalPlots);
+        console.log('====================================');
+        if (data.stats) {
           this.stats = [
             {
-              label: "Total Properties",
-              value: data.overview.totalPlots.toLocaleString(),
-              change: "+12%",
+              label: 'Total Properties',
+              value: data.stats.totalPlots,
+              change: '+12%',
               icon: 'heroHome',
-              color: "blue"
+              color: 'blue',
             },
             {
-              label: "Active Users",
-              value: data.overview.totalUsers.toLocaleString(),
-              change: "+8%",
+              label: 'Active Users',
+              value: data.roleCounts.USER,
+              change: '+8%',
               icon: 'heroUsers',
-              color: "green"
+              color: 'green',
             },
             {
-              label: "Pending Verifications",
-              value: data.overview.pendingPlots.toLocaleString(),
-              change: "0%",
+              label: 'Pending Verifications',
+              value: data.stats.pendingPlots,
+              change: '0%',
               icon: 'heroExclamationCircle',
-              color: "yellow"
+              color: 'yellow',
             },
             {
-              label: "Completed Transactions",
-              value: data.overview.mintedNfts.toLocaleString(),
-              change: "+15%",
+              label: 'Completed Transactions',
+              value: data.stats.mintedNfts,
+              change: '+15%',
               icon: 'heroCheckCircle',
-              color: "purple"
-            }
+              color: 'purple',
+            },
           ];
         }
       },
-      error: (err) => console.error('Error fetching admin stats', err)
+      error: (err) => console.error('Error fetching admin stats', err),
     });
   }
 
@@ -114,16 +118,18 @@ export class AdminDashboardComponent implements OnInit {
     this.plotService.getAllPlots().subscribe({
       next: (plots) => {
         this.pendingVerifications.set(
-          plots.filter(p => p.status === 'PENDING_APPROVAL').map(p => ({
-            id: p.id,
-            property: p.title,
-            user: p.ownerId, // Ideally we'd have the owner name here
-            type: "Title Deed",
-            date: p.createdAt,
-            priority: "medium"
-          }))
+          plots
+            .filter((p) => p.status === 'PENDING_APPROVAL')
+            .map((p) => ({
+              id: p.id,
+              property: p.plotName,
+              user: p.owner.fullName, // Ideally we'd have the owner name here
+              type: 'Title Deed',
+              date: p.createdAt,
+              priority: 'medium',
+            })),
         );
-      }
+      },
     });
   }
 
@@ -131,7 +137,7 @@ export class AdminDashboardComponent implements OnInit {
     this.userService.getRecentActivities().subscribe({
       next: (activities) => {
         this.recentActivities.set(activities);
-      }
+      },
     });
   }
 
@@ -143,7 +149,8 @@ export class AdminDashboardComponent implements OnInit {
           this.loadStats();
           this.loadActivities();
         },
-        error: (err) => alert('Failed to approve: ' + (err.error?.message || 'Error'))
+        error: (err) =>
+          alert('Failed to approve: ' + (err.error?.message || 'Error')),
       });
     }
   }
@@ -157,7 +164,8 @@ export class AdminDashboardComponent implements OnInit {
           this.loadStats();
           this.loadActivities();
         },
-        error: (err) => alert('Failed to reject: ' + (err.error?.message || 'Error'))
+        error: (err) =>
+          alert('Failed to reject: ' + (err.error?.message || 'Error')),
       });
     }
   }

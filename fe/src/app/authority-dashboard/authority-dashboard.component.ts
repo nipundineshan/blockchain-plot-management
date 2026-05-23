@@ -91,7 +91,7 @@ export class AuthorityDashboardComponent implements OnInit {
             },
           ];
         }
-      }
+      },
     });
   }
 
@@ -99,18 +99,20 @@ export class AuthorityDashboardComponent implements OnInit {
     this.plotService.getAllPlots().subscribe({
       next: (plots) => {
         this.pendingApprovals.set(
-          plots.filter(p => p.status === 'PENDING_APPROVAL').map(p => ({
-            id: p.id,
-            property: p.title,
-            propertyId: p.id.substring(0, 8).toUpperCase(),
-            owner: p.ownerId,
-            documentType: 'Title Deed',
-            submittedDate: p.createdAt,
-            location: p.location,
-            status: 'pending'
-          }))
+          plots
+            .filter((p) => p.status === 'PENDING_APPROVAL')
+            .map((p) => ({
+              id: p.id,
+              property: p.plotName,
+              propertyId: p.id.substring(0, 8).toUpperCase(),
+              owner: p.owner,
+              documentType: 'Title Deed',
+              submittedDate: p.createdAt,
+              location: p.address,
+              status: 'pending',
+            })),
         );
-      }
+      },
     });
   }
 
