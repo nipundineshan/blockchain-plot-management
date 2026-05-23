@@ -39,11 +39,13 @@ import {
   heroEnvelope,
   heroLockClosed,
   heroArrowRight,
-  heroPhone
+  heroPhone,
 } from '@ng-icons/heroicons/outline';
+import { provideHttpClient } from '@angular/common/http';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideIcons({
@@ -82,7 +84,7 @@ export const appConfig: ApplicationConfig = {
       heroEnvelope,
       heroLockClosed,
       heroArrowRight,
-      heroPhone
-    })
-  ]
+      heroPhone,
+    }),
+  ],
 };
