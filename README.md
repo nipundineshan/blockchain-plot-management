@@ -4,9 +4,9 @@ Welcome to the BPM platform repository. This project is a Real World Asset (RWA)
 
 ## Project Structure
 - **/be**: NestJS backend service.
-  - See [be/GEMINI.md](be/GEMINI.md) for architecture and API details.
+  - See [be/Backend.md](be/Backend.md) for architecture and API details.
 - **/fe**: Angular frontend application.
-  - See [fe/GEMINI.md](fe/GEMINI.md) for UI components and service architecture.
+  - See [fe/FrontEnd.md](fe/FrontEnd.md) for UI components and service architecture.
 
 ## Key Technologies
 - **Blockchain:** Ethereum/EVM, Ethers.js, Solidity.
