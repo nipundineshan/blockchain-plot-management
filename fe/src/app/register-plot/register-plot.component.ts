@@ -36,8 +36,8 @@ import { PlotService } from '../core/services/plot.service';
                   </div>
 
                   <div class="space-y-2">
-                    <label class="text-sm font-medium text-blue-200">Property Title</label>
-                    <input formControlName="title" placeholder="e.g. Modern Villa in Downtown" 
+                    <label class="text-sm font-medium text-blue-200">Property Title (Plot Name)</label>
+                    <input formControlName="plotName" placeholder="e.g. Modern Villa in Downtown" 
                            class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                   </div>
 
@@ -49,27 +49,62 @@ import { PlotService } from '../core/services/plot.service';
 
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-2">
-                      <label class="text-sm font-medium text-blue-200">Location / City</label>
-                      <input formControlName="location" placeholder="City Name" 
+                      <label class="text-sm font-medium text-blue-200">Survey Number</label>
+                      <input formControlName="surveyNumber" placeholder="SRV-12345" 
                              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                     </div>
                     <div class="space-y-2">
-                      <label class="text-sm font-medium text-blue-200">District / Area</label>
-                      <input formControlName="district" placeholder="Area Name" 
+                      <label class="text-sm font-medium text-blue-200">Registration Number</label>
+                      <input formControlName="registrationNumber" placeholder="REG-67890" 
                              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                     </div>
                   </div>
 
                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div class="space-y-2">
-                      <label class="text-sm font-medium text-blue-200">Price ($)</label>
-                      <input type="number" formControlName="price" 
+                      <label class="text-sm font-medium text-blue-200">Market Value ($)</label>
+                      <input type="number" formControlName="marketValue" 
                              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
                     </div>
                     <div class="space-y-2">
                       <label class="text-sm font-medium text-blue-200">Area Size (sqft)</label>
-                      <input type="number" formControlName="areaSize" 
+                      <input formControlName="areaSize" placeholder="e.g. 2400"
                              class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                    </div>
+                  </div>
+
+                  <div class="space-y-2">
+                    <label class="text-sm font-medium text-blue-200">Full Address</label>
+                    <input formControlName="address" placeholder="123 Street Name, Area" 
+                           class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                      <label class="text-sm font-medium text-blue-200">District</label>
+                      <input formControlName="district" placeholder="District Name" 
+                             class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                    </div>
+                    <div class="space-y-2">
+                      <label class="text-sm font-medium text-blue-200">State</label>
+                      <input formControlName="state" placeholder="State Name" 
+                             class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                    </div>
+                  </div>
+
+                   <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-2">
+                      <label class="text-sm font-medium text-blue-200">Country</label>
+                      <input formControlName="country" placeholder="Country Name" 
+                             class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                    </div>
+                    <div class="space-y-2">
+                      <!-- Placeholders for lat/lng -->
+                      <label class="text-sm font-medium text-blue-200">Coordinates (Auto-set)</label>
+                      <div class="flex gap-2">
+                         <input type="number" formControlName="latitude" placeholder="Lat" class="w-1/2 px-2 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-xs">
+                         <input type="number" formControlName="longitude" placeholder="Lng" class="w-1/2 px-2 py-3 bg-white/5 border border-white/10 rounded-xl text-white text-xs">
+                      </div>
                     </div>
                   </div>
                 </div>
@@ -81,22 +116,47 @@ import { PlotService } from '../core/services/plot.service';
                   </div>
 
                   <div class="space-y-2">
-                    <label class="text-sm font-medium text-blue-200">Property Image URL</label>
-                    <input formControlName="imageUrl" placeholder="https://images.unsplash.com/..." 
-                           class="w-full px-4 py-3 bg-white/5 border border-white/10 rounded-xl text-white focus:ring-2 focus:ring-blue-500 outline-none transition-all">
+                    <label class="text-sm font-medium text-blue-200">Property Images</label>
+                    <div (click)="imageInput.click()" class="p-6 border-2 border-dashed border-white/10 rounded-2xl text-center bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
+                      <input #imageInput type="file" (change)="onFileChange($event, 'images')" multiple accept="image/*" class="hidden">
+                      <ng-icon name="heroPhoto" class="w-10 h-10 text-blue-400 mb-2 group-hover:scale-110 transition-transform"></ng-icon>
+                      <p class="text-white text-sm">Click to upload property images</p>
+                      <p class="text-blue-200/40 text-[10px] mt-1">Select one or more photos</p>
+                    </div>
+                    <!-- Image Previews -->
+                    <div class="flex flex-wrap gap-2 mt-2">
+                       @for (preview of imagePreviews(); track $index) {
+                         <div class="relative w-20 h-20 rounded-lg overflow-hidden border border-white/10">
+                            <img [src]="preview" class="w-full h-full object-cover">
+                         </div>
+                       }
+                    </div>
                   </div>
 
-                  <div class="p-8 border-2 border-dashed border-white/10 rounded-2xl text-center bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
-                    <ng-icon name="heroCloudArrowUp" class="w-12 h-12 text-blue-400 mb-2 group-hover:scale-110 transition-transform"></ng-icon>
-                    <p class="text-white font-medium">Upload Legal Documents</p>
-                    <p class="text-blue-200/40 text-xs mt-1">Property deeds, tax receipts, or ID (Max 10MB)</p>
+                  <div class="space-y-2">
+                    <label class="text-sm font-medium text-blue-200">Legal Documents</label>
+                    <div (click)="docInput.click()" class="p-6 border-2 border-dashed border-white/10 rounded-2xl text-center bg-white/5 hover:bg-white/10 transition-colors cursor-pointer group">
+                      <input #docInput type="file" (change)="onFileChange($event, 'docs')" multiple accept=".pdf,.doc,.docx" class="hidden">
+                      <ng-icon name="heroCloudArrowUp" class="w-10 h-10 text-blue-400 mb-2 group-hover:scale-110 transition-transform"></ng-icon>
+                      <p class="text-white text-sm">Click to upload legal documents</p>
+                      <p class="text-blue-200/40 text-[10px] mt-1">PDF, DOCX accepted (Max 10MB)</p>
+                    </div>
+                    <!-- Doc List -->
+                     <ul class="mt-2 space-y-1">
+                        @for (doc of selectedDocs(); track $index) {
+                          <li class="text-xs text-blue-200/60 flex items-center gap-2">
+                             <ng-icon name="heroDocumentText" class="w-4 h-4"></ng-icon>
+                             {{doc.name}}
+                          </li>
+                        }
+                     </ul>
                   </div>
                 </div>
 
                 <div class="bg-blue-500/10 border border-blue-500/20 p-4 rounded-xl flex gap-3">
                   <ng-icon name="heroInformationCircle" class="w-6 h-6 text-blue-400 flex-shrink-0"></ng-icon>
                   <p class="text-blue-200/80 text-xs leading-relaxed">
-                    By submitting, you certify that all information and documents provided are legally authentic. Your plot will undergo a multi-stage verification process by our administrators.
+                    By submitting, you certify that all information and documents provided are legally authentic. Your plot will undergo a multi-stage verification process.
                   </p>
                 </div>
 
@@ -120,7 +180,7 @@ import { PlotService } from '../core/services/plot.service';
               <ul class="space-y-3 text-sm text-blue-100/80">
                 <li class="flex gap-2">
                   <span class="text-blue-400">•</span>
-                  Ensure title matches legal records exactly.
+                  Ensure survey number is accurate.
                 </li>
                 <li class="flex gap-2">
                   <span class="text-blue-400">•</span>
@@ -128,20 +188,13 @@ import { PlotService } from '../core/services/plot.service';
                 </li>
                 <li class="flex gap-2">
                   <span class="text-blue-400">•</span>
-                  Include accurate area size.
+                  Registration number is required.
                 </li>
                 <li class="flex gap-2">
                   <span class="text-blue-400">•</span>
                   Review takes 24-72 hours.
                 </li>
               </ul>
-            </div>
-
-            <div *ngIf="plotForm.get('imageUrl')?.value" class="backdrop-blur-lg bg-white/10 rounded-2xl border border-white/20 overflow-hidden shadow-xl">
-              <div class="p-4 border-b border-white/10">
-                <h4 class="text-white font-bold text-sm">Media Preview</h4>
-              </div>
-              <img [src]="plotForm.get('imageUrl')?.value" class="w-full h-48 object-cover">
             </div>
           </div>
         </div>
@@ -157,22 +210,80 @@ export class RegisterPlotComponent {
   plotForm: FormGroup;
   isLoading = false;
 
+  selectedImages = signal<File[]>([]);
+  selectedDocs = signal<File[]>([]);
+  imagePreviews = signal<string[]>([]);
+
   constructor() {
     this.plotForm = this.fb.group({
-      title: ['', [Validators.required]],
+      plotName: ['', [Validators.required]],
       description: ['', [Validators.required]],
-      location: ['', [Validators.required]],
+      surveyNumber: ['', [Validators.required]],
+      areaSize: ['', [Validators.required]],
+      latitude: [0, [Validators.required]],
+      longitude: [0, [Validators.required]],
+      address: ['', [Validators.required]],
       district: ['', [Validators.required]],
-      price: [null, [Validators.required, Validators.min(1)]],
-      areaSize: [null, [Validators.required, Validators.min(1)]],
-      imageUrl: ['', [Validators.required]]
+      state: ['', [Validators.required]],
+      country: ['', [Validators.required]],
+      marketValue: [null, [Validators.required, Validators.min(1)]],
+      registrationNumber: ['', [Validators.required]]
+    });
+  }
+
+  onFileChange(event: any, type: 'images' | 'docs') {
+    const files = event.target.files;
+    if (files.length > 0) {
+      if (type === 'images') {
+        this.selectedImages.set(Array.from(files));
+        this.generateImagePreviews();
+      } else {
+        this.selectedDocs.set(Array.from(files));
+      }
+    }
+  }
+
+  generateImagePreviews() {
+    const previews: string[] = [];
+    const images = this.selectedImages();
+    if (images.length === 0) {
+      this.imagePreviews.set([]);
+      return;
+    }
+    
+    images.forEach(file => {
+      const reader = new FileReader();
+      reader.onload = (e: any) => {
+        previews.push(e.target.result);
+        if (previews.length === images.length) {
+          this.imagePreviews.set(previews);
+        }
+      };
+      reader.readAsDataURL(file);
     });
   }
 
   onSubmit() {
     if (this.plotForm.valid) {
       this.isLoading = true;
-      this.plotService.createPlot(this.plotForm.value).subscribe({
+      
+      const formData = new FormData();
+      
+      // Append text fields
+      Object.keys(this.plotForm.controls).forEach(key => {
+        formData.append(key, this.plotForm.get(key)?.value);
+      });
+
+      // Append files
+      this.selectedImages().forEach(file => {
+        formData.append('propertyImages', file);
+      });
+
+      this.selectedDocs().forEach(file => {
+        formData.append('legalDocuments', file);
+      });
+
+      this.plotService.createPlot(formData).subscribe({
         next: () => {
           alert('Property submitted successfully!');
           this.router.navigate(['/user/dashboard']);

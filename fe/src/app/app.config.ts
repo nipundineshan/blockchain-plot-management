@@ -45,9 +45,9 @@ import {
   heroTrash,
   heroCheck,
   heroCloudArrowUp,
-  heroInformationCircle,
   heroDocumentDuplicate,
-  heroArrowDownTray
+  heroPhoto,
+  heroXMark
 } from '@ng-icons/heroicons/outline';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
@@ -99,9 +99,9 @@ export const appConfig: ApplicationConfig = {
       heroTrash,
       heroCheck,
       heroCloudArrowUp,
-      heroInformationCircle,
       heroDocumentDuplicate,
-      heroArrowDownTray
+      heroPhoto,
+      heroXMark
     }),
   ],
 };

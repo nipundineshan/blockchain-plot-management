@@ -56,13 +56,23 @@ import { Plot } from '../core/models';
                   </td>
                   <td class="py-4 px-6">
                     <div class="flex gap-2">
-                      <button [routerLink]="['/property', plot.id]" class="p-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-colors">
+                      <button [routerLink]="['/property', plot.id]" title="View Details" class="p-2 bg-blue-500/20 text-blue-300 rounded-lg hover:bg-blue-500/30 transition-colors">
                         <ng-icon name="heroEye" class="w-4 h-4"></ng-icon>
                       </button>
+                      
+                      @if (plot.status === 'PENDING_APPROVAL') {
+                        <button (click)="approvePlot(plot.id)" title="Approve" class="p-2 bg-green-500/20 text-green-300 rounded-lg hover:bg-green-500/30 transition-colors">
+                          <ng-icon name="heroCheck" class="w-4 h-4"></ng-icon>
+                        </button>
+                        <button (click)="rejectPlot(plot.id)" title="Reject" class="p-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors">
+                          <ng-icon name="heroXMark" class="w-4 h-4"></ng-icon>
+                        </button>
+                      }
+
                       <button class="p-2 bg-yellow-500/20 text-yellow-300 rounded-lg hover:bg-yellow-500/30 transition-colors">
                         <ng-icon name="heroPencil" class="w-4 h-4"></ng-icon>
                       </button>
-                      <button (click)="deletePlot(plot.id)" class="p-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors">
+                      <button (click)="deletePlot(plot.id)" title="Delete" class="p-2 bg-red-500/20 text-red-300 rounded-lg hover:bg-red-500/30 transition-colors">
                         <ng-icon name="heroTrash" class="w-4 h-4"></ng-icon>
                       </button>
                     </div>
@@ -107,6 +117,25 @@ export class AdminPropertiesComponent implements OnInit {
       },
       error: () => this.isLoading = false
     });
+  }
+
+  approvePlot(id: string) {
+    if (confirm('Are you sure you want to approve this property?')) {
+      this.plotService.approvePlot(id).subscribe({
+        next: () => this.loadPlots(),
+        error: (err) => alert('Failed to approve: ' + (err.error?.message || 'Error'))
+      });
+    }
+  }
+
+  rejectPlot(id: string) {
+    const reason = prompt('Reason for rejection:');
+    if (reason) {
+      this.plotService.rejectPlot(id, reason).subscribe({
+        next: () => this.loadPlots(),
+        error: (err) => alert('Failed to reject: ' + (err.error?.message || 'Error'))
+      });
+    }
   }
 
   getStatusClass(status: string): string {

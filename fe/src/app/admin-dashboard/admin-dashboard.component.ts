@@ -134,6 +134,33 @@ export class AdminDashboardComponent implements OnInit {
     });
   }
 
+  approvePlot(id: string) {
+    if (confirm('Are you sure you want to approve this property?')) {
+      this.plotService.approvePlot(id).subscribe({
+        next: () => {
+          this.loadPendingVerifications();
+          this.loadStats();
+          this.loadActivities();
+        },
+        error: (err) => alert('Failed to approve: ' + (err.error?.message || 'Error'))
+      });
+    }
+  }
+
+  rejectPlot(id: string) {
+    const reason = prompt('Reason for rejection:');
+    if (reason) {
+      this.plotService.rejectPlot(id, reason).subscribe({
+        next: () => {
+          this.loadPendingVerifications();
+          this.loadStats();
+          this.loadActivities();
+        },
+        error: (err) => alert('Failed to reject: ' + (err.error?.message || 'Error'))
+      });
+    }
+  }
+
   getPriorityClass(priority: string): string {
     switch (priority) {
       case 'high':
