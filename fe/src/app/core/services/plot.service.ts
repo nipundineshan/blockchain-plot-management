@@ -12,6 +12,7 @@ export class PlotService {
   private http = inject(HttpClient);
   private appState = inject(AppStateService);
   private apiUrl = `${environment.apiUrl}/plots`;
+  private adminApiUrl = `${environment.apiUrl}/admin/plots`;
 
   getAllPlots(): Observable<Plot[]> {
     this.appState.setLoading(true);
@@ -46,13 +47,13 @@ export class PlotService {
   }
 
   approvePlot(id: string): Observable<Plot> {
-    return this.http.patch<any>(`${this.apiUrl}/${id}/approve`, {}).pipe(
+    return this.http.post<any>(`${this.adminApiUrl}/${id}/approve`, {}).pipe(
       map(res => res.data || res)
     );
   }
 
   rejectPlot(id: string, reason: string): Observable<Plot> {
-    return this.http.patch<any>(`${this.apiUrl}/${id}/reject`, { reason }).pipe(
+    return this.http.post<any>(`${this.adminApiUrl}/${id}/reject`, { reason }).pipe(
       map(res => res.data || res)
     );
   }

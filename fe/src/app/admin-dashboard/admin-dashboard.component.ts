@@ -24,6 +24,7 @@ export class AdminDashboardComponent implements OnInit {
   readonly BarChart3 = 'heroChartBar';
   readonly AlertCircle = 'heroExclamationCircle';
   readonly CheckCircle = 'heroCheckCircle';
+  readonly UserPlus = 'heroUserPlus';
 
   private plotService = inject(PlotService);
   private userService = inject(UserService);

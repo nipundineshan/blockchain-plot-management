@@ -32,8 +32,7 @@ export class UserService {
     return this.http
       .post<any>(`${this.apiUrl_admin}/${userData.id}/approve`, null)
       .pipe(
-        map((res) => res.data || res),
-        tap((user) => this.appState.setUser(user)),
+        map((res) => res.data || res)
       );
   }
 

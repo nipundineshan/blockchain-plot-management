@@ -1,6 +1,8 @@
-import { Component } from '@angular/core';
-import { RouterLink } from '@angular/router';
+import { Component, inject } from '@angular/core';
+import { Router, RouterLink } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
+import { UserService } from '../core/services/user.service';
+import { AuthService } from '../core/services/auth.service';
 
 @Component({
   selector: 'app-pending-approval',
@@ -18,15 +20,43 @@ import { NgIconComponent } from '@ng-icons/core';
           You will receive an email once your account is approved.
         </p>
         <div class="space-y-4">
-          <button routerLink="/" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20">
-            Back to Home
+          <button (click)="checkStatus()" class="w-full py-3 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl transition-all shadow-lg shadow-blue-500/20 flex items-center justify-center gap-2">
+            @if (isLoading) {
+              <div class="w-5 h-5 border-2 border-white/30 border-t-white rounded-full animate-spin"></div>
+            }
+            <span>Check Status Again</span>
           </button>
-          <button routerLink="/login" class="w-full py-3 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl border border-white/10 transition-all">
-            Check Again
+          <button routerLink="/" class="w-full py-3 bg-white/5 hover:bg-white/10 text-white font-medium rounded-xl border border-white/10 transition-all">
+            Back to Home
           </button>
         </div>
       </div>
     </div>
   `
 })
-export class PendingApprovalComponent {}
+export class PendingApprovalComponent {
+  private userService = inject(UserService);
+  private authService = inject(AuthService);
+  private router = inject(Router);
+  
+  isLoading = false;
+
+  checkStatus() {
+    this.isLoading = true;
+    this.userService.getProfile().subscribe({
+      next: (user) => {
+        if (user.status === 'APPROVED') {
+          // Update local state and redirect
+          this.authService.redirectByRole(user);
+        } else {
+          alert('Your account is still pending approval.');
+        }
+        this.isLoading = false;
+      },
+      error: (err) => {
+        console.error('Error checking status', err);
+        this.isLoading = false;
+      }
+    });
+  }
+}

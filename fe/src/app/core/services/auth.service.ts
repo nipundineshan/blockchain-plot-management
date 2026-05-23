@@ -76,6 +76,9 @@ export class AuthService {
   }
 
   redirectByRole(user: User) {
+    // Update local app state if it's different
+    this.appState.setUser(user);
+
     if (user.status !== 'APPROVED' && user.role === 'USER') {
       this.router.navigate(['/pending-approval']);
       return;
@@ -83,7 +86,7 @@ export class AuthService {
 
     switch (user.role) {
       case 'SUPER_ADMIN':
-        this.router.navigate(['/super-admin/dashboard']);
+        this.router.navigate(['/admin/dashboard']);
         break;
       case 'ADMIN':
         this.router.navigate(['/admin/dashboard']);

@@ -47,7 +47,8 @@ import {
   heroCloudArrowUp,
   heroDocumentDuplicate,
   heroPhoto,
-  heroXMark
+  heroXMark,
+  heroUserPlus
 } from '@ng-icons/heroicons/outline';
 import { provideHttpClient, withInterceptors } from '@angular/common/http';
 import { authInterceptor } from './core/interceptors/auth.interceptor';
@@ -101,7 +102,8 @@ export const appConfig: ApplicationConfig = {
       heroCloudArrowUp,
       heroDocumentDuplicate,
       heroPhoto,
-      heroXMark
+      heroXMark,
+      heroUserPlus
     }),
   ],
 };

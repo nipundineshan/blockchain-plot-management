@@ -20,6 +20,7 @@ import { AdminUsersComponent } from './admin-users/admin-users.component';
 import { AdminVerificationsComponent } from './admin-verifications/admin-verifications.component';
 import { AdminDocumentsComponent } from './admin-documents/admin-documents.component';
 import { AdminSettingsComponent } from './admin-settings/admin-settings.component';
+import { AdminAddAdminComponent } from './admin-add-admin/admin-add-admin.component';
 
 import { RegisterPlotComponent } from './register-plot/register-plot.component';
 import { UserProfileComponent } from './user-profile/user-profile.component';
@@ -75,6 +76,11 @@ export const routes: Routes = [
     path: 'admin/users',
     component: AdminUsersComponent,
     canActivate: [authGuard, adminGuard]
+  },
+  {
+    path: 'admin/add-admin',
+    component: AdminAddAdminComponent,
+    canActivate: [authGuard, superAdminGuard]
   },
   {
     path: 'admin/verifications',

@@ -3,6 +3,7 @@ import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
 import { UserService } from '../core/services/user.service';
+import { AppStateService } from '../core/services/app-state.service';
 import { User } from '../core/models';
 
 @Component({
@@ -18,9 +19,11 @@ import { User } from '../core/models';
              <a routerLink="/admin/dashboard" class="px-4 py-2 bg-white/10 text-white rounded-lg hover:bg-white/20 transition-colors">
               Back to Dashboard
             </a>
-            <button class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
-              Create Admin
-            </button>
+            @if (appState.currentUser()?.role === 'SUPER_ADMIN') {
+              <a routerLink="/admin/add-admin" class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition-colors">
+                Create Admin
+              </a>
+            }
           </div>
         </div>
 
@@ -99,6 +102,7 @@ import { User } from '../core/models';
 })
 export class AdminUsersComponent implements OnInit {
   private userService = inject(UserService);
+  public appState = inject(AppStateService);
   users = signal<User[]>([]);
   isLoading = true;
 
