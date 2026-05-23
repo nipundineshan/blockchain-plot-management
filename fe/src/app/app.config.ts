@@ -1,0 +1,88 @@
+import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { provideRouter } from '@angular/router';
+
+import { routes } from './app.routes';
+import { provideIcons } from '@ng-icons/core';
+import {
+  heroHome,
+  heroUsers,
+  heroDocumentText,
+  heroShieldCheck,
+  heroCog6Tooth,
+  heroArrowLeftOnRectangle,
+  heroChartBar,
+  heroExclamationCircle,
+  heroCheckCircle,
+  heroMagnifyingGlass,
+  heroMapPin,
+  heroClock,
+  heroExclamationTriangle,
+  heroDocumentCheck,
+  heroSquares2x2,
+  heroArrowPath,
+  heroArrowDownTray,
+  heroEye,
+  heroArrowTopRightOnSquare,
+  heroBars3,
+  heroBell,
+  heroAdjustmentsHorizontal,
+  heroArrowLeft,
+  heroHeart,
+  heroShare,
+  heroInformationCircle,
+  heroChevronDown,
+  heroChevronLeft,
+  heroSquare3Stack3d,
+  heroCalendar,
+  heroSparkles,
+  heroUser,
+  heroEnvelope,
+  heroLockClosed,
+  heroArrowRight,
+  heroPhone
+} from '@ng-icons/heroicons/outline';
+
+export const appConfig: ApplicationConfig = {
+  providers: [
+    provideZoneChangeDetection({ eventCoalescing: true }),
+    provideRouter(routes),
+    provideIcons({
+      heroHome,
+      heroUsers,
+      heroDocumentText,
+      heroShieldCheck,
+      heroCog6Tooth,
+      heroArrowLeftOnRectangle,
+      heroChartBar,
+      heroExclamationCircle,
+      heroCheckCircle,
+      heroMagnifyingGlass,
+      heroMapPin,
+      heroClock,
+      heroExclamationTriangle,
+      heroDocumentCheck,
+      heroSquares2x2,
+      heroArrowPath,
+      heroArrowDownTray,
+      heroEye,
+      heroArrowTopRightOnSquare,
+      heroBars3,
+      heroBell,
+      heroAdjustmentsHorizontal,
+      heroArrowLeft,
+      heroHeart,
+      heroShare,
+      heroInformationCircle,
+      heroChevronDown,
+      heroChevronLeft,
+      heroSquare3Stack3d,
+      heroCalendar,
+      heroSparkles,
+      heroUser,
+      heroEnvelope,
+      heroLockClosed,
+      heroArrowRight,
+      heroPhone
+    })
+  ]
+};
