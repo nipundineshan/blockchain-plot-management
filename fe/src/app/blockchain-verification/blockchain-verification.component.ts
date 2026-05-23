@@ -5,8 +5,6 @@ import { Component } from '@angular/core';
   standalone: true,
   imports: [],
   templateUrl: './blockchain-verification.component.html',
-  styleUrl: './blockchain-verification.component.scss'
+  styleUrl: './blockchain-verification.component.scss',
 })
-export class BlockchainVerificationComponent {
-
-}
+export class BlockchainVerificationComponent {}
