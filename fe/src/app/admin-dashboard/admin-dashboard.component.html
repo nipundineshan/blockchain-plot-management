@@ -51,7 +51,7 @@
               <ng-icon [name]="Settings" class="w-5 h-5"></ng-icon>
               <span>Settings</span>
             </a>
-            <a routerLink="/login" class="flex items-center gap-3 px-4 py-3 text-red-300 hover:bg-red-500/20 rounded-xl">
+            <a (click)="logout()" routerLink="/login" class="flex items-center gap-3 px-4 py-3 text-red-300 hover:bg-red-500/20 rounded-xl cursor-pointer">
               <ng-icon [name]="LogOut" class="w-5 h-5"></ng-icon>
               <span>Logout</span>
             </a>
@@ -103,12 +103,12 @@
                 </tr>
               </thead>
               <tbody>
-                @for (item of pendingVerifications; track item.id) {
+                @for (item of pendingVerifications(); track item.id) {
                   <tr class="border-b border-white/5 hover:bg-white/5">
                     <td class="py-3 px-4 font-medium text-white">{{item.property}}</td>
                     <td class="py-3 px-4 text-blue-200">{{item.user}}</td>
                     <td class="py-3 px-4 text-blue-200">{{item.type}}</td>
-                    <td class="py-3 px-4 text-blue-200">{{item.date}}</td>
+                    <td class="py-3 px-4 text-blue-200">{{item.date | date:'shortDate'}}</td>
                     <td class="py-3 px-4">
                       <span [class]="'px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ' + getPriorityClass(item.priority)">
                         {{item.priority}}
@@ -126,6 +126,11 @@
                     </td>
                   </tr>
                 }
+                @if (pendingVerifications().length === 0) {
+                  <tr>
+                    <td colspan="6" class="text-center py-6 text-blue-200/40">No pending verifications</td>
+                  </tr>
+                }
               </tbody>
             </table>
           </div>
@@ -135,22 +140,25 @@
         <div class="backdrop-blur-lg bg-white/10 rounded-2xl border border-white/20 p-6 shadow-xl">
           <h2 class="text-xl font-semibold text-white mb-4">Recent Activity</h2>
           <div class="space-y-4">
-            @for (activity of recentActivities; track $index) {
+            @for (activity of recentActivities(); track $index) {
               <div class="flex items-start gap-4 pb-4 border-b border-white/10 last:border-0">
                 <div class="w-10 h-10 backdrop-blur-sm bg-white/10 rounded-full flex items-center justify-center flex-shrink-0 border border-white/20">
                   <ng-icon [name]="Shield" class="w-5 h-5 text-blue-300"></ng-icon>
                 </div>
                 <div class="flex-1">
                   <p class="text-white">
-                    <span class="font-medium">{{activity.action}}</span>
-                    @if (activity.property !== '-') {
+                    <span class="font-medium">{{activity.title || activity.action}}</span>
+                    @if (activity.property && activity.property !== '-') {
                       - <span class="text-blue-300">{{activity.property}}</span>
                     }
                   </p>
                   <p class="text-sm text-blue-200">By {{activity.user}}</p>
-                  <p class="text-xs text-blue-300 mt-1">{{activity.time}}</p>
+                  <p class="text-xs text-blue-300 mt-1">{{activity.time || activity.timestamp | date:'short'}}</p>
                 </div>
               </div>
+            }
+            @if (recentActivities().length === 0) {
+              <p class="text-center py-4 text-blue-200/40">No recent activity</p>
             }
           </div>
         </div>

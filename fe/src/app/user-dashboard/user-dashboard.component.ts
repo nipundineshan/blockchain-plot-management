@@ -1,7 +1,11 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, signal, inject } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
+import { PlotService } from '../core/services/plot.service';
+import { UserService } from '../core/services/user.service';
+import { AppStateService } from '../core/services/app-state.service';
+import { Plot } from '../core/models';
 
 @Component({
   selector: 'app-user-dashboard',
@@ -14,7 +18,7 @@ import { NgIconComponent } from '@ng-icons/core';
   templateUrl: './user-dashboard.component.html',
   styleUrls: ['./user-dashboard.component.scss']
 })
-export class UserDashboardComponent {
+export class UserDashboardComponent implements OnInit {
 
   readonly Home = 'heroHome';
   readonly Heart = 'heroHeart';
@@ -25,6 +29,15 @@ export class UserDashboardComponent {
   readonly LogOut = 'heroArrowLeftOnRectangle';
   readonly MapPin = 'heroMapPin';
   readonly Shield = 'heroShieldCheck';
+  readonly PlusCircle = 'heroPlusCircle';
+
+  private plotService = inject(PlotService);
+  private userService = inject(UserService);
+  public appState = inject(AppStateService);
+
+  plots = signal<Plot[]>([]);
+  recentActivity: any[] = [];
+  isLoading = true;
 
   savedProperties = [
     {
@@ -47,38 +60,43 @@ export class UserDashboardComponent {
     }
   ];
 
-  myProperties = [
-    {
-      id: 3,
-      image:
-        'https://images.unsplash.com/photo-1523217582562-09d0def993a6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&q=80&w=400',
-      title: 'Luxury Estate',
-      location: 'Prime Location',
-      price: 620000,
-      status: 'verified',
-      listingDate: '2024-01-15'
-    }
-  ];
+  ngOnInit() {
+    this.loadPlots();
+    this.loadActivities();
+  }
 
-  recentActivity = [
-    {
-      action: 'Saved property',
-      property: 'Modern Villa',
-      date: '2024-02-15'
-    },
-    {
-      action: 'Scheduled viewing',
-      property: 'Contemporary House',
-      date: '2024-02-14'
-    },
-    {
-      action: 'Document uploaded',
-      property: 'Luxury Estate',
-      date: '2024-02-10'
-    }
-  ];
+  loadPlots() {
+    this.plotService.getMyPlots().subscribe({
+      next: (plots) => {
+        this.plots.set(plots);
+        this.isLoading = false;
+      },
+      error: () => this.isLoading = false
+    });
+  }
+
+  loadActivities() {
+    this.userService.getRecentActivities().subscribe({
+      next: (activities) => {
+        this.recentActivity = activities;
+      },
+      error: (err) => console.error('Error loading activities', err)
+    });
+  }
+
+  getMintedCount() {
+    return this.plots().filter(p => p.status === 'MINTED' || p.isMinted).length;
+  }
+
+  getPendingCount() {
+    return this.plots().filter(p => p.status === 'PENDING_APPROVAL').length;
+  }
 
   formatPrice(price: number): string {
     return price.toLocaleString();
+  }
+
+  logout() {
+    this.appState.setUser(null);
   }
 }

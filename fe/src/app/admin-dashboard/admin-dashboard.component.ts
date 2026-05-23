@@ -1,7 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
+import { PlotService } from '../core/services/plot.service';
+import { AppStateService } from '../core/services/app-state.service';
+import { UserService } from '../core/services/user.service';
 
 @Component({
   selector: 'app-admin-dashboard',
@@ -10,7 +13,7 @@ import { NgIconComponent } from '@ng-icons/core';
   templateUrl: './admin-dashboard.component.html',
   styleUrl: './admin-dashboard.component.scss'
 })
-export class AdminDashboardComponent {
+export class AdminDashboardComponent implements OnInit {
 
   readonly Home = 'heroHome';
   readonly Users = 'heroUsers';
@@ -22,90 +25,114 @@ export class AdminDashboardComponent {
   readonly AlertCircle = 'heroExclamationCircle';
   readonly CheckCircle = 'heroCheckCircle';
 
+  private plotService = inject(PlotService);
+  private userService = inject(UserService);
+  public appState = inject(AppStateService);
+
   stats = [
     {
       label: "Total Properties",
-      value: "1,234",
-      change: "+12%",
+      value: "0",
+      change: "+0%",
       icon: 'heroHome',
       color: "blue"
     },
     {
       label: "Active Users",
-      value: "8,456",
-      change: "+8%",
+      value: "0",
+      change: "+0%",
       icon: 'heroUsers',
       color: "green"
     },
     {
       label: "Pending Verifications",
-      value: "42",
-      change: "-5%",
+      value: "0",
+      change: "0%",
       icon: 'heroExclamationCircle',
       color: "yellow"
     },
     {
       label: "Completed Transactions",
-      value: "567",
-      change: "+15%",
+      value: "0",
+      change: "+0%",
       icon: 'heroCheckCircle',
       color: "purple"
     }
   ];
 
-  pendingVerifications = [
-    {
-      id: 1,
-      property: "Modern Villa",
-      user: "John Smith",
-      type: "Title Deed",
-      date: "2024-02-15",
-      priority: "high"
-    },
-    {
-      id: 2,
-      property: "Suburban House",
-      user: "Jane Doe",
-      type: "Land Survey",
-      date: "2024-02-14",
-      priority: "medium"
-    },
-    {
-      id: 3,
-      property: "Downtown Condo",
-      user: "Bob Johnson",
-      type: "Tax Assessment",
-      date: "2024-02-13",
-      priority: "low"
-    }
-  ];
+  pendingVerifications = signal<any[]>([]);
+  recentActivities = signal<any[]>([]);
 
-  recentActivities = [
-    {
-      action: "Property verified",
-      user: "Admin User",
-      property: "Luxury Estate",
-      time: "2 hours ago"
-    },
-    {
-      action: "New user registered",
-      user: "Alice Brown",
-      property: "-",
-      time: "3 hours ago"
-    },
-    {
-      action: "Document approved",
-      user: "Admin User",
-      property: "Modern Villa",
-      time: "5 hours ago"
-    },
-    {
-      action: "Property listed",
-      user: "John Smith",
-      property: "Family Home",
-      time: "1 day ago"
-    }
-  ];
+  ngOnInit() {
+    this.loadStats();
+    this.loadPendingVerifications();
+    this.loadActivities();
+  }
+
+  loadStats() {
+    this.plotService.getStats().subscribe({
+      next: (data) => {
+        if (data.overview) {
+          this.stats = [
+            {
+              label: "Total Properties",
+              value: data.overview.totalPlots.toLocaleString(),
+              change: "+12%",
+              icon: 'heroHome',
+              color: "blue"
+            },
+            {
+              label: "Active Users",
+              value: data.overview.totalUsers.toLocaleString(),
+              change: "+8%",
+              icon: 'heroUsers',
+              color: "green"
+            },
+            {
+              label: "Pending Verifications",
+              value: data.overview.pendingPlots.toLocaleString(),
+              change: "0%",
+              icon: 'heroExclamationCircle',
+              color: "yellow"
+            },
+            {
+              label: "Completed Transactions",
+              value: data.overview.mintedNfts.toLocaleString(),
+              change: "+15%",
+              icon: 'heroCheckCircle',
+              color: "purple"
+            }
+          ];
+        }
+      },
+      error: (err) => console.error('Error fetching admin stats', err)
+    });
+  }
+
+  loadPendingVerifications() {
+    this.plotService.getAllPlots().subscribe({
+      next: (plots) => {
+        this.pendingVerifications.set(
+          plots.filter(p => p.status === 'PENDING_APPROVAL').map(p => ({
+            id: p.id,
+            property: p.title,
+            user: p.ownerId, // Ideally we'd have the owner name here
+            type: "Title Deed",
+            date: p.createdAt,
+            priority: "medium"
+          }))
+        );
+      }
+    });
+  }
+
+  loadActivities() {
+    this.userService.getRecentActivities().subscribe({
+      next: (activities) => {
+        this.recentActivities.set(activities);
+      }
+    });
+  }
 
   getPriorityClass(priority: string): string {
     switch (priority) {
@@ -122,5 +149,9 @@ export class AdminDashboardComponent {
 
   getChangeClass(change: string): string {
     return change.startsWith('+') ? 'text-green-300' : 'text-red-300';
+  }
+
+  logout() {
+    this.appState.setUser(null);
   }
 }

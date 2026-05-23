@@ -2,18 +2,28 @@ import { Component, inject } from '@angular/core';
 import { Router, RouterLink } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
 import {
+  AbstractControl,
   FormBuilder,
   FormGroup,
   FormsModule,
   ReactiveFormsModule,
+  ValidationErrors,
+  ValidatorFn,
   Validators,
 } from '@angular/forms';
 import { AuthService } from '../core/services/auth.service';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-register',
   standalone: true,
-  imports: [RouterLink, NgIconComponent, FormsModule, ReactiveFormsModule],
+  imports: [
+    CommonModule,
+    RouterLink,
+    NgIconComponent,
+    FormsModule,
+    ReactiveFormsModule,
+  ],
   templateUrl: './register.component.html',
   styleUrl: './register.component.scss',
 })
@@ -35,25 +45,46 @@ export class RegisterComponent {
   hidePassword = true;
 
   constructor() {
-    this.registerForm = this.fb.group({
-      fullName: ['', [Validators.required]],
-      email: ['', [Validators.required, Validators.email]],
-      phoneNumber: ['', [Validators.required]],
-      governmentId: ['', [Validators.required]],
-      walletAddress: ['', [Validators.required]],
-      address: ['', [Validators.required]],
-      password: ['', [Validators.required, Validators.minLength(6)]],
-      confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
-    });
+    this.registerForm = this.fb.group(
+      {
+        fullName: ['', [Validators.required]],
+        email: ['', [Validators.required, Validators.email]],
+        phoneNumber: ['', [Validators.required]],
+        governmentId: ['', [Validators.required]],
+        walletAddress: ['', [Validators.required]],
+        address: ['', [Validators.required]],
+        password: ['', [Validators.required, Validators.minLength(6)]],
+        confirmPassword: ['', [Validators.required, Validators.minLength(6)]],
+      },
+      { validators: this.passwordMatchValidator() },
+    );
+  }
+
+  passwordMatchValidator(): ValidatorFn {
+    return (control: AbstractControl): ValidationErrors | null => {
+      const password = control.get('password');
+      const confirmPassword = control.get('confirmPassword');
+
+      if (
+        password &&
+        confirmPassword &&
+        password.value !== confirmPassword.value
+      ) {
+        confirmPassword.setErrors({ passwordMismatch: true });
+        return { passwordMismatch: true };
+      }
+      return null;
+    };
   }
 
   onSubmit() {
-    console.log(this.registerForm.value);
     if (this.registerForm.valid) {
       this.isLoading = true;
-      this.authService.signup(this.registerForm.value).subscribe({
+      const { confirmPassword, ...signupData } = this.registerForm.value;
+
+      this.authService.signup(signupData).subscribe({
         next: () => {
-          this.router.navigate(['/auth/pending-approval']);
+          this.router.navigate(['/pending-approval']);
         },
         error: (err) => {
           alert(

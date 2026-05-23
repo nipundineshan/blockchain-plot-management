@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterLink } from '@angular/router';
 import { NgIconComponent } from '@ng-icons/core';
+import { PlotService } from '../core/services/plot.service';
+import { AppStateService } from '../core/services/app-state.service';
 
 @Component({
   selector: 'app-authority-dashboard',
@@ -10,7 +12,7 @@ import { NgIconComponent } from '@ng-icons/core';
   templateUrl: './authority-dashboard.component.html',
   styleUrl: './authority-dashboard.component.scss',
 })
-export class AuthorityDashboardComponent {
+export class AuthorityDashboardComponent implements OnInit {
   readonly Home = 'heroHome';
   readonly Shield = 'heroShieldCheck';
   readonly FileCheck = 'heroDocumentCheck';
@@ -20,86 +22,97 @@ export class AuthorityDashboardComponent {
   readonly CheckCircle = 'heroCheckCircle';
   readonly Clock = 'heroClock';
 
+  private plotService = inject(PlotService);
+  public appState = inject(AppStateService);
+
   stats = [
     {
       label: 'Pending Approvals',
-      value: '18',
+      value: '0',
       icon: 'heroClock',
       color: 'yellow',
     },
     {
       label: 'Approved Today',
-      value: '32',
+      value: '0',
       icon: 'heroCheckCircle',
       color: 'green',
     },
     {
       label: 'Rejected',
-      value: '5',
+      value: '0',
       icon: 'heroExclamationTriangle',
       color: 'red',
     },
     {
       label: 'Total Verified',
-      value: '1,247',
+      value: '0',
       icon: 'heroShieldCheck',
       color: 'blue',
     },
   ];
 
-  pendingApprovals = [
-    {
-      id: 1,
-      property: 'Modern Villa',
-      propertyId: 'PROP-2024-001',
-      owner: 'John Smith',
-      documentType: 'Title Deed',
-      submittedDate: '2024-02-15',
-      location: 'Downtown District',
-      status: 'pending',
-    },
-    {
-      id: 2,
-      property: 'Suburban House',
-      propertyId: 'PROP-2024-002',
-      owner: 'Jane Doe',
-      documentType: 'Land Survey Report',
-      submittedDate: '2024-02-14',
-      location: 'Suburban Area',
-      status: 'pending',
-    },
-    {
-      id: 3,
-      property: 'Commercial Plaza',
-      propertyId: 'PROP-2024-003',
-      owner: 'ABC Corporation',
-      documentType: 'Building Permit',
-      submittedDate: '2024-02-13',
-      location: 'Business District',
-      status: 'under_review',
-    },
-  ];
+  pendingApprovals = signal<any[]>([]);
+  recentDecisions = signal<any[]>([]);
 
-  recentDecisions = [
-    {
-      property: 'Luxury Estate',
-      decision: 'Approved',
-      date: '2024-02-15',
-      authority: 'Land Registry',
-    },
-    {
-      property: 'Family Home',
-      decision: 'Approved',
-      date: '2024-02-14',
-      authority: 'Municipal Authority',
-    },
-    {
-      property: 'Downtown Condo',
-      decision: 'Rejected',
-      date: '2024-02-13',
-      authority: 'Building Department',
-    },
-  ];
+  ngOnInit() {
+    this.loadStats();
+    this.loadPendingApprovals();
+  }
+
+  loadStats() {
+    this.plotService.getGlobalStats().subscribe({
+      next: (data) => {
+        if (data.overview) {
+          this.stats = [
+            {
+              label: 'Pending Approvals',
+              value: data.overview.pendingPlots.toLocaleString(),
+              icon: 'heroClock',
+              color: 'yellow',
+            },
+            {
+              label: 'Approved Today',
+              value: data.overview.approvedPlots.toLocaleString(),
+              icon: 'heroCheckCircle',
+              color: 'green',
+            },
+            {
+              label: 'Rejected',
+              value: data.overview.rejectedPlots?.toLocaleString() || '0',
+              icon: 'heroExclamationTriangle',
+              color: 'red',
+            },
+            {
+              label: 'Total Verified',
+              value: data.overview.mintedNfts.toLocaleString(),
+              icon: 'heroShieldCheck',
+              color: 'blue',
+            },
+          ];
+        }
+      }
+    });
+  }
+
+  loadPendingApprovals() {
+    this.plotService.getAllPlots().subscribe({
+      next: (plots) => {
+        this.pendingApprovals.set(
+          plots.filter(p => p.status === 'PENDING_APPROVAL').map(p => ({
+            id: p.id,
+            property: p.title,
+            propertyId: p.id.substring(0, 8).toUpperCase(),
+            owner: p.ownerId,
+            documentType: 'Title Deed',
+            submittedDate: p.createdAt,
+            location: p.location,
+            status: 'pending'
+          }))
+        );
+      }
+    });
+  }
 
   getStatusClass(status: string): string {
     switch (status) {
@@ -114,5 +127,9 @@ export class AuthorityDashboardComponent {
       default:
         return '';
     }
+  }
+
+  logout() {
+    this.appState.setUser(null);
   }
 }

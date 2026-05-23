@@ -23,7 +23,7 @@
         </p>
       </div>
       <div class="p-6 pt-0">
-        <form [formGroup]="registerForm" class="space-y-6">
+        <form [formGroup]="registerForm" (ngSubmit)="onSubmit()" class="space-y-6">
           <!-- <div class="space-y-2">
             <label class="text-blue-200/60 ml-1 text-sm font-medium">Account Category</label>
             <div class="relative">
@@ -100,6 +100,19 @@
           </div>
 
           <div class="space-y-2">
+            <label for="walletAddress" class="text-blue-200/60 ml-1 text-sm font-medium">Wallet Address</label>
+            <div class="relative group">
+              <ng-icon [name]="Lock" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-300/40 group-focus-within:text-blue-400 transition-colors"></ng-icon>
+              <input
+                formControlName="walletAddress"
+                id="walletAddress"
+                placeholder="0x..."
+                class="flex h-12 w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 pl-11"
+              />
+            </div>
+          </div>
+
+          <div class="space-y-2">
             <label for="location" class="text-blue-200/60 ml-1 text-sm font-medium">Your Location</label>
             <div class="relative group">
               <ng-icon [name]="MapPin" class="absolute left-3.5 top-1/2 -translate-y-1/2 w-4 h-4 text-blue-300/40 group-focus-within:text-blue-400 transition-colors"></ng-icon>
@@ -136,8 +149,12 @@
                   id="confirmPassword"
                   placeholder="••••••••"
                   class="flex h-12 w-full rounded-md border border-white/10 bg-white/5 px-3 py-2 text-sm text-white placeholder:text-white/20 focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-blue-500/50 pl-11"
+                  [class.border-red-500]="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']"
                 />
               </div>
+              <p *ngIf="registerForm.get('confirmPassword')?.errors?.['passwordMismatch']" class="text-red-400 text-xs mt-1 ml-1">
+                Passwords do not match.
+              </p>
             </div>
           </div>
 

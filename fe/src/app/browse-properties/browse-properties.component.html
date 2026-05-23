@@ -85,7 +85,7 @@
 
     <!-- Results Header -->
     <div class="flex justify-between items-center mb-6">
-      <p class="text-blue-200">{{properties.length}} properties found</p>
+      <p class="text-blue-200">{{properties().length}} properties found</p>
       <select class="px-4 py-2 backdrop-blur-md bg-white/10 border border-white/20 rounded-xl text-white focus:outline-none focus:ring-2 focus:ring-white/30">
         <option>Sort by: Newest</option>
         <option>Price: Low to High</option>
@@ -95,25 +95,33 @@
     </div>
 
     <!-- Property Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      @for (property of properties; track property.id) {
+    <div *ngIf="isLoading" class="flex justify-center items-center py-20">
+      <div class="animate-spin rounded-full h-12 w-12 border-t-2 border-b-2 border-blue-500"></div>
+    </div>
+
+    <div *ngIf="!isLoading && properties().length === 0" class="text-center py-20 bg-white/5 rounded-2xl border border-white/10">
+      <p class="text-blue-200/60 text-white">No properties matching your criteria were found.</p>
+    </div>
+
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" *ngIf="!isLoading">
+      @for (property of properties(); track property.id) {
         <a
           [routerLink]="['/property', property.id]"
           class="backdrop-blur-lg bg-white/10 rounded-2xl border border-white/20 hover:bg-white/15 transition-all hover:scale-105 overflow-hidden shadow-xl group"
         >
           <div class="relative overflow-hidden">
             <img
-              [src]="property.image"
+              [src]="property.imageUrl || 'https://images.unsplash.com/photo-1500382017468-9049fed747ef?auto=format&fit=crop&w=800&q=80'"
               [alt]="property.title"
               class="w-full h-48 object-cover group-hover:scale-110 transition-transform duration-300"
             />
             <div class="absolute inset-0 bg-gradient-to-t from-black/50 to-transparent"></div>
             <span [class]="'absolute top-3 right-3 px-3 py-1 rounded-full text-xs font-medium backdrop-blur-sm ' + (
-              property.status === 'verified'
+              (property.status === 'APPROVED' || property.status === 'MINTED')
                 ? 'bg-green-500/30 text-green-200 border border-green-400/50'
                 : 'bg-yellow-500/30 text-yellow-200 border border-yellow-400/50'
             )">
-              {{property.status === 'verified' ? '✓ Verified' : 'Pending'}}
+              {{(property.status === 'APPROVED' || property.status === 'MINTED') ? '✓ Verified' : 'Pending'}}
             </span>
           </div>
           <div class="p-5">
@@ -123,13 +131,12 @@
               <span class="text-sm">{{property.location}}</span>
             </div>
             <div class="flex gap-4 text-sm text-blue-200 mb-4">
-              <span>{{property.bedrooms}} bed</span>
-              <span>{{property.bathrooms}} bath</span>
-              <span>{{property.area}}</span>
+              <span>{{property.areaSize}} sq ft</span>
+              <span>{{property.isMinted ? 'Blockchain' : 'Verified'}}</span>
             </div>
             <div class="flex justify-between items-center">
               <p class="text-2xl font-bold text-white">${{formatPrice(property.price)}}</p>
-              <span class="text-sm text-blue-300">{{property.type}}</span>
+              <span class="text-sm text-blue-300">{{property.status}}</span>
             </div>
           </div>
         </a>

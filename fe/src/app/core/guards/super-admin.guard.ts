@@ -14,7 +14,7 @@ export const superAdminGuard: CanActivateFn = (route, state) => {
     if (user) {
       authService.redirectByRole(user);
     } else {
-      router.navigate(['/auth/login']);
+      router.navigate(['/login']);
     }
     return false;
   }

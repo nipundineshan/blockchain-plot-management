@@ -54,7 +54,7 @@ export class AuthService {
 
   logout() {
     this.appState.setUser(null);
-    this.router.navigate(['/auth/login']);
+    this.router.navigate(['/login']);
   }
 
   getToken(): string | null {
@@ -77,7 +77,7 @@ export class AuthService {
 
   redirectByRole(user: User) {
     if (user.status !== 'APPROVED' && user.role === 'USER') {
-      this.router.navigate(['/auth/pending-approval']);
+      this.router.navigate(['/pending-approval']);
       return;
     }
 
@@ -92,7 +92,7 @@ export class AuthService {
         this.router.navigate(['/user/dashboard']);
         break;
       default:
-        this.router.navigate(['/auth/login']);
+        this.router.navigate(['/login']);
     }
   }
 }

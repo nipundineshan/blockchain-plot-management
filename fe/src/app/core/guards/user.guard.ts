@@ -11,14 +11,14 @@ export const userGuard: CanActivateFn = (route, state) => {
     if (user.status === 'APPROVED') {
       return true;
     } else {
-      router.navigate(['/auth/pending-approval']);
+      router.navigate(['/pending-approval']);
       return false;
     }
   } else {
     if (user) {
       authService.redirectByRole(user);
     } else {
-      router.navigate(['/auth/login']);
+      router.navigate(['/login']);
     }
     return false;
   }
