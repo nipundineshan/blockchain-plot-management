@@ -1,38 +1,33 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import * as fs from 'fs';
-
-const pinataSDK = require('@pinata/sdk');
-
-interface PinataResult {
-  IpfsHash: string;
-  PinSize: number;
-  Timestamp: string;
-}
+import { PinataSDK } from "pinata";
 
 @Injectable()
 export class IpfsService {
   private readonly logger = new Logger(IpfsService.name);
 
-  private pinata: any;
+  private pinata: PinataSDK;
 
   constructor(private configService: ConfigService) {
-    const apiKey = this.configService.get<string>('PINATA_API_KEY');
-    const secretKey = this.configService.get<string>('PINATA_SECRET_API_KEY');
+    const pinataJwt = this.configService.get<string>('PINATA_JWT');
+    const pinataGateway = this.configService.get<string>('PINATA_GATEWAY');
 
-    if (apiKey && secretKey) {
-      this.pinata = new pinataSDK(apiKey, secretKey);
+    if (pinataJwt) {
+      this.pinata = new PinataSDK({
+        pinataJwt: pinataJwt,
+        pinataGateway: pinataGateway,
+      });
+      this.logger.log('Pinata SDK initialized successfully');
     } else {
-      this.logger.warn('Pinata API keys missing. IPFS uploads will fail.');
+      this.logger.warn('PINATA_JWT missing. IPFS uploads will fail.');
     }
   }
 
   async uploadJson(metadata: Record<string, unknown>): Promise<string> {
     try {
-      const result = (await this.pinata.pinJSONToIPFS(
-        metadata,
-      )) as PinataResult;
-      return result.IpfsHash;
+      const upload = await this.pinata.upload.public.json(metadata);
+      return upload.cid;
     } catch (error) {
       this.logger.error('Error uploading JSON to IPFS', error);
       throw error;
@@ -41,17 +36,12 @@ export class IpfsService {
 
   async uploadFile(filePath: string, name: string): Promise<string> {
     try {
-      const readableStreamForFile = fs.createReadStream(filePath);
-      const options = {
-        pinataMetadata: {
-          name: name,
-        },
-      };
-      const result = (await this.pinata.pinFileToIPFS(
-        readableStreamForFile,
-        options,
-      )) as PinataResult;
-      return result.IpfsHash;
+      const fileContent = fs.readFileSync(filePath);
+      const blob = new Blob([fileContent]);
+      const file = new File([blob], name);
+      
+      const upload = await this.pinata.upload.public.file(file);
+      return upload.cid;
     } catch (error) {
       this.logger.error('Error uploading file to IPFS', error);
       throw error;

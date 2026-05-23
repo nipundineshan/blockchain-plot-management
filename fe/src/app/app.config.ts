@@ -39,11 +39,26 @@ import {
   heroEnvelope,
   heroLockClosed,
   heroArrowRight,
-  heroPhone
+  heroPhone,
+  heroPlusCircle,
+  heroPencil,
+  heroTrash,
+  heroCheck,
+  heroCloudArrowUp,
+  heroDocumentDuplicate,
+  heroPhoto,
+  heroXMark,
+  heroUserPlus,
+  heroCpuChip,
+  heroCube,
+  heroSquare2Stack
 } from '@ng-icons/heroicons/outline';
+import { provideHttpClient, withInterceptors } from '@angular/common/http';
+import { authInterceptor } from './core/interceptors/auth.interceptor';
 
 export const appConfig: ApplicationConfig = {
   providers: [
+    provideHttpClient(withInterceptors([authInterceptor])),
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(routes),
     provideIcons({
@@ -82,7 +97,19 @@ export const appConfig: ApplicationConfig = {
       heroEnvelope,
       heroLockClosed,
       heroArrowRight,
-      heroPhone
-    })
-  ]
+      heroPhone,
+      heroPlusCircle,
+      heroPencil,
+      heroTrash,
+      heroCheck,
+      heroCloudArrowUp,
+      heroDocumentDuplicate,
+      heroPhoto,
+      heroXMark,
+      heroUserPlus,
+      heroCpuChip,
+      heroCube,
+      heroSquare2Stack
+    }),
+  ],
 };

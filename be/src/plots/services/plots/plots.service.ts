@@ -304,6 +304,9 @@ export class PlotsService {
     const mintedPlots = await this.plotRepository.count({
       where: { status: PlotStatus.MINTED },
     });
+    const pendingPlots = await this.plotRepository.count({
+      where: { status: PlotStatus.PENDING_APPROVAL },
+    });
 
     const totalValueResult = await this.plotRepository
       .createQueryBuilder('plot')
@@ -329,6 +332,7 @@ export class PlotsService {
         totalPlots,
         approvedPlots,
         mintedPlots,
+        pendingPlots,
         totalMarketValue: parseFloat(totalValueResult.total || '0'),
       },
       monthlyActivity,

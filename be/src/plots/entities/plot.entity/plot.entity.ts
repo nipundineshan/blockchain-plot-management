@@ -12,10 +12,10 @@ import { PropertyImage } from '../property-image.entity';
 import { LegalDocument } from '../legal-document.entity';
 
 export enum PlotStatus {
-  PENDING_APPROVAL = 'pending_approval',
-  APPROVED = 'approved',
-  REJECTED = 'rejected',
-  MINTED = 'minted',
+  PENDING_APPROVAL = 'PENDING_APPROVAL',
+  APPROVED = 'APPROVED',
+  REJECTED = 'REJECTED',
+  MINTED = 'MINTED',
 }
 
 @Entity('plots')
