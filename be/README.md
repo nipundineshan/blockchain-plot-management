@@ -96,3 +96,31 @@ Nest is an MIT-licensed open source project. It can grow thanks to the sponsors 
 ## License
 
 Nest is [MIT licensed](https://github.com/nestjs/nest/blob/master/LICENSE).
+
+##Sample env file
+
+# Database
+
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=postgres
+DB_PASSWORD=postgres
+DB_DATABASE=bpm_rwa
+
+# JWT
+
+JWT_SECRET=
+JWT_EXPIRATION=24h
+
+# Blockchain (Sepolia)
+
+SEPOLIA_RPC_URL=https://eth-sepolia.g.alchemy.com/v2/
+PRIVATE_KEY=
+CONTRACT_ADDRESS=0x8E5364096036b4226780e6bD77c5f65585a42bF1
+
+# IPFS (Pinata)
+
+PINATA_API_KEY=
+PINATA_SECRET_API_KEY=
+PINATA_JWT=
+PINATA_GATEWAY=
