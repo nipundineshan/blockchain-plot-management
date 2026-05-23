@@ -145,7 +145,7 @@ import { Plot } from '../core/models';
                     <code
                       class="text-xs text-blue-300 bg-blue-500/10 px-2 py-1 rounded"
                     >
-                      {{ plot.owner.id.substring(0, 16) }}...
+                      {{ plot.owner.walletAddress?.substring(0, 16) }}...
                     </code>
                   </td>
                   <td class="py-4 px-6">
